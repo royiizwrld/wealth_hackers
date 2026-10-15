@@ -101,8 +101,6 @@ export function toCSV(txs: Transaction[]) {
   return rows.map((r) => r.map(csvCell).join(",")).join("\n");
 }
 
-const norm = (s?: string) => (s ?? "").toLowerCase().replace(/[^a-z0-9]/g, "");
-
 /** A candidate is a possible duplicate if an existing transaction has the same date, type and amount. */
 export function findDuplicate(
   c: { date: string; amount: number; type: string; note?: string },
@@ -112,8 +110,7 @@ export function findDuplicate(
     (t) =>
       t.date === c.date &&
       t.type === c.type &&
-      Math.abs(t.amount - c.amount) < 0.005 &&
-      (!c.note || !t.note || norm(t.note).includes(norm(c.note).slice(0, 4)) || true),
+      Math.abs(t.amount - c.amount) < 0.005,
   );
 }
 
