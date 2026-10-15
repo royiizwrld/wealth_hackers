@@ -1,24 +1,61 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useMemo, useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { useFinance } from "@/hooks/use-finance";
+import { byMonth, inRange, monthKey, spendingByCategory, todayISO, totals } from "@/lib/finance";
+import { CategoryDonut, MonthlyBars, RecentList, SavingsGoalCard, SummaryCards } from "@/components/dashboard/DashboardWidgets";
+import { DateRangeInputs } from "@/components/DateRangeInputs";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
-  component: Index,
+  head: () => ({
+    meta: [
+      { title: "Dashboard — Pocketwise" },
+      { name: "description", content: "Your monthly income, expenses, savings goal and spending charts at a glance." },
+      { property: "og:title", content: "Dashboard — Pocketwise" },
+      { property: "og:description", content: "Your monthly income, expenses, savings goal and spending charts at a glance." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
+  component: Dashboard,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+function Dashboard() {
+  const { transactions, range, ready } = useFinance();
+  const [month, setMonth] = useState(monthKey(todayISO()));
+  const monthTx = useMemo(() => transactions.filter((t) => monthKey(t.date) === month), [transactions, month]);
+  const ranged = useMemo(() => transactions.filter((t) => inRange(t, range)), [transactions, range]);
+  const sum = totals(monthTx);
+  const recent = [...transactions].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 6);
+
+  if (!ready) return <div className="h-96 animate-pulse rounded-2xl bg-muted" />;
+
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <div className="space-y-6">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 className="text-3xl font-semibold">Overview</h1>
+          <p className="text-sm text-muted-foreground">How your money moved this month.</p>
+        </div>
+        <Input type="month" aria-label="Month" value={month} onChange={(e) => e.target.value && setMonth(e.target.value)} className="h-9 w-auto" />
+      </div>
+      <SummaryCards {...sum} />
+      <div className="grid gap-4 lg:grid-cols-3">
+        <SavingsGoalCard net={sum.net} />
+        <Card className="lg:col-span-2">
+          <CardContent className="flex h-full flex-col justify-center gap-2 p-5">
+            <p className="text-sm font-medium">Chart date range</p>
+            <DateRangeInputs />
+            <p className="text-xs text-muted-foreground">Leave blank to show all time. Also applies to the Transactions page.</p>
+          </CardContent>
+        </Card>
+      </div>
+      <div className="grid gap-4 lg:grid-cols-2">
+        <CategoryDonut data={spendingByCategory(ranged)} />
+        <MonthlyBars data={byMonth(ranged)} />
+      </div>
+      <RecentList items={recent} />
     </div>
   );
 }
