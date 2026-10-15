@@ -13,3 +13,4 @@
 - All finance data (transactions, categories, goal, currency, theme) lives in localStorage via the single `FinanceProvider`/`useFinance` in src/hooks/use-finance.tsx — one storage owner avoids drift.
 - AI calls go through TanStack server routes `src/routes/api/chat.ts` (streamed text) and `src/routes/api/parse.ts` (JSON extraction) using `src/lib/ai.server.ts` — keeps the gateway key server-side.
 - Pure finance logic (totals, CSV, duplicates, AI row parsing) lives in src/lib and is unit-tested in src/test/finance.test.ts.
+- Dictation uses a shared browser SpeechRecognition hook and controls in both text-entry surfaces; unsupported browsers retain manual typing without adding a separate AI service.

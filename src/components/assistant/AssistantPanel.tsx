@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useFinance } from "@/hooks/use-finance";
 import { buildSummary, uid } from "@/lib/finance";
+import { useVoiceTyping } from "@/hooks/use-voice-typing";
+import { VoiceTypingButton, VoiceTypingStatus } from "@/components/VoiceTyping";
 
 interface Msg { role: "user" | "assistant"; content: string }
 interface Thread { id: string; title: string; updatedAt: number; messages: Msg[] }
@@ -29,13 +31,15 @@ export function AssistantPanel() {
   const [error, setError] = useState("");
   const endRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const voice = useVoiceTyping((text) => setInput((current) => `${current}${current && !/\s$/.test(current) ? " " : ""}${text}`));
+  useEffect(() => { if (!open || showHistory || loading) voice.stop(); }, [open, showHistory, loading]);
 
   useEffect(() => {
     let list: Thread[] = [];
     try { list = JSON.parse(localStorage.getItem(KEY) || "[]"); } catch { /* ignore */ }
     if (!list.length) list = [{ id: uid(), title: "New chat", updatedAt: Date.now(), messages: [] }];
     setThreads(list);
-    setActiveId(list[0]!.id);
+    setActiveId(list[0]?.id ?? "");
   }, []);
 
   const save = (list: Thread[]) => {
@@ -48,6 +52,7 @@ export function AssistantPanel() {
   useEffect(() => { if (open && !showHistory) setTimeout(() => inputRef.current?.focus(), 50); }, [open, showHistory, activeId, loading]);
 
   const newChat = () => {
+    voice.stop();
     const t: Thread = { id: uid(), title: "New chat", updatedAt: Date.now(), messages: [] };
     save([t, ...threads]);
     setActiveId(t.id);
@@ -57,6 +62,7 @@ export function AssistantPanel() {
 
   const send = async (text: string) => {
     if (!text.trim() || loading || !active) return;
+    voice.stop();
     setError("");
     setInput("");
     const id = active.id;
@@ -107,7 +113,7 @@ export function AssistantPanel() {
     let list = threads.filter((t) => t.id !== id);
     if (!list.length) list = [{ id: uid(), title: "New chat", updatedAt: Date.now(), messages: [] }];
     save(list);
-    if (id === activeId) setActiveId(list[0]!.id);
+    if (id === activeId) setActiveId(list[0]?.id ?? "");
   };
 
   const last = active?.messages[active.messages.length - 1];
@@ -213,10 +219,12 @@ export function AssistantPanel() {
                     rows={1}
                     className="max-h-32 min-h-10 resize-none"
                   />
-                  <Button type="submit" size="icon" disabled={loading || !input.trim()} aria-label="Send">
+                  <VoiceTypingButton voice={voice} disabled={loading} />
+                  <Button type="submit" size="icon" disabled={loading || voice.listening || !input.trim()} aria-label="Send">
                     <Send className="h-4 w-4" />
                   </Button>
                 </form>
+                <VoiceTypingStatus voice={voice} />
                 <div className="mt-2 flex justify-between text-xs text-muted-foreground">
                   <span>General guidance, not financial advice.</span>
                   <button onClick={clearChat} className="underline-offset-2 hover:underline">Clear chat</button>
