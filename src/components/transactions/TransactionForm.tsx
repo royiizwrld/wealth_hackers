@@ -23,7 +23,7 @@ export function TransactionForm({ open, onOpenChange, editing }: Props) {
   const [category, setCategory] = useState("");
   const [note, setNote] = useState("");
   const [newCat, setNewCat] = useState("");
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<Partial<Record<"amount" | "date" | "category", string>>>({});
 
   useEffect(() => {
     if (!open) return;
@@ -38,7 +38,7 @@ export function TransactionForm({ open, onOpenChange, editing }: Props) {
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     const n = Number(amount);
-    const errs: Record<string, string> = {};
+    const errs: Partial<Record<"amount" | "date" | "category", string>> = {};
     if (!amount || !Number.isFinite(n) || n <= 0) errs.amount = "Enter a positive amount";
     if (!date) errs.date = "Date is required";
     if (!category) errs.category = "Pick a category";

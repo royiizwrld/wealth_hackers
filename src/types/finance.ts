@@ -6,7 +6,7 @@ export interface Transaction {
   date: string; // YYYY-MM-DD
   type: TransactionType;
   category: string;
-  note?: string;
+  note?: string | undefined;
   sample?: boolean;
 }
 
@@ -15,8 +15,8 @@ export interface SavingsGoal {
 }
 
 export interface DateRange {
-  from?: string; // YYYY-MM-DD
-  to?: string;
+  from?: string | undefined; // YYYY-MM-DD
+  to?: string | undefined;
 }
 
 export interface FinanceSettings {
@@ -32,5 +32,5 @@ export interface ParsedRow {
   category: string;
   note: string;
   confidence: "high" | "low";
-  reason?: string;
+  reason?: string | undefined;
 }

@@ -34,7 +34,7 @@ export function BulkEntry() {
   };
 
   const analyze = async () => {
-    if (!text.trim() && !image) return toast.error("Paste some text or upload a file first");
+    if (!text.trim() && !image) { toast.error("Paste some text or upload a file first"); return; }
     setLoading(true);
     setError("");
     try {
@@ -61,7 +61,7 @@ export function BulkEntry() {
 
   const confirm = () => {
     const bad = rows.find((r) => !(r.amount > 0) || !r.date || !r.category);
-    if (bad) return toast.error("Each row needs a positive amount, date and category");
+    if (bad) { toast.error("Each row needs a positive amount, date and category"); return; }
     addTransactions(rows.map((r) => ({ amount: r.amount, date: r.date, type: r.type, category: r.category, note: r.note || undefined })));
     toast.success(`Saved ${rows.length} transactions`);
     setRows([]);

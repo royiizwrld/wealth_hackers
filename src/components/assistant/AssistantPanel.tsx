@@ -35,7 +35,7 @@ export function AssistantPanel() {
     try { list = JSON.parse(localStorage.getItem(KEY) || "[]"); } catch { /* ignore */ }
     if (!list.length) list = [{ id: uid(), title: "New chat", updatedAt: Date.now(), messages: [] }];
     setThreads(list);
-    setActiveId(list[0].id);
+    setActiveId(list[0]!.id);
   }, []);
 
   const save = (list: Thread[]) => {
@@ -107,7 +107,7 @@ export function AssistantPanel() {
     let list = threads.filter((t) => t.id !== id);
     if (!list.length) list = [{ id: uid(), title: "New chat", updatedAt: Date.now(), messages: [] }];
     save(list);
-    if (id === activeId) setActiveId(list[0].id);
+    if (id === activeId) setActiveId(list[0]!.id);
   };
 
   const last = active?.messages[active.messages.length - 1];

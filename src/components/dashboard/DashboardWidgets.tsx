@@ -43,7 +43,7 @@ export function SavingsGoalCard({ net }: { net: number }) {
   const remaining = Math.max(0, goal - net);
   const save = () => {
     const n = Number(val);
-    if (!Number.isFinite(n) || n <= 0) return toast.error("Enter a positive goal amount");
+    if (!Number.isFinite(n) || n <= 0) { toast.error("Enter a positive goal amount"); return; }
     setGoal(n);
     setEditing(false);
     toast.success("Savings goal updated");
