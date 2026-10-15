@@ -19,9 +19,9 @@ import type { Transaction } from "@/types/finance";
 export const Route = createFileRoute("/transactions")({
   head: () => ({
     meta: [
-      { title: "Transactions — Pocketwise" },
+      { title: "Transactions — Wealth Hackers" },
       { name: "description", content: "Add, filter, edit and export your income and expense transactions." },
-      { property: "og:title", content: "Transactions — Pocketwise" },
+      { property: "og:title", content: "Transactions — Wealth Hackers" },
       { property: "og:description", content: "Add, filter, edit and export your income and expense transactions." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

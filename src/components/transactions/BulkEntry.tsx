@@ -10,6 +10,8 @@ import { useFinance } from "@/hooks/use-finance";
 import { findDuplicate, todayISO, uid } from "@/lib/finance";
 import { parseAIRows } from "@/lib/parse-rows";
 import type { ParsedRow } from "@/types/finance";
+import { useVoiceTyping } from "@/hooks/use-voice-typing";
+import { VoiceTypingButton, VoiceTypingStatus } from "@/components/VoiceTyping";
 
 export function BulkEntry() {
   const { categories, transactions, addTransactions, money } = useFinance();
@@ -19,6 +21,7 @@ export function BulkEntry() {
   const [rows, setRows] = useState<ParsedRow[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const voice = useVoiceTyping((spoken) => setText((current) => `${current}${current && !/\s$/.test(current) ? " " : ""}${spoken}`));
 
   const onFile = (f?: File) => {
     if (!f) return;
@@ -83,6 +86,7 @@ export function BulkEntry() {
           placeholder={'Paste bank lines, M-Pesa messages, receipts or notes, e.g. "lunch 450, uber 800 yesterday, salary 85000 on the 1st"'}
         />
         <div className="flex flex-wrap items-center gap-2">
+          <VoiceTypingButton voice={voice} disabled={loading} />
           <label className="inline-flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm hover:bg-muted">
             <Upload className="h-4 w-4" /> Upload CSV or receipt image
             <input type="file" accept=".csv,text/csv,text/plain,image/*" className="hidden" onChange={(e) => onFile(e.target.files?.[0])} />
@@ -92,10 +96,11 @@ export function BulkEntry() {
               {fileName} <button className="underline" onClick={() => { setImage(null); setFileName(""); }}>remove</button>
             </span>
           )}
-          <Button className="ml-auto" onClick={analyze} disabled={loading}>
+          <Button className="ml-auto" onClick={analyze} disabled={loading || voice.listening}>
             {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />} Analyze
           </Button>
         </div>
+        <VoiceTypingStatus voice={voice} />
         {error && <div className="rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive">{error}</div>}
 
         {rows.length > 0 && (

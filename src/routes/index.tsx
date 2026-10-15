@@ -10,9 +10,9 @@ import { DateRangeInputs } from "@/components/DateRangeInputs";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Dashboard — Pocketwise" },
+      { title: "Dashboard — Wealth Hackers" },
       { name: "description", content: "Your monthly income, expenses, savings goal and spending charts at a glance." },
-      { property: "og:title", content: "Dashboard — Pocketwise" },
+      { property: "og:title", content: "Dashboard — Wealth Hackers" },
       { property: "og:description", content: "Your monthly income, expenses, savings goal and spending charts at a glance." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

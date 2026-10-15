@@ -12,9 +12,9 @@ import { CURRENCIES, formatMoney } from "@/lib/finance";
 export const Route = createFileRoute("/settings")({
   head: () => ({
     meta: [
-      { title: "Settings — Pocketwise" },
+      { title: "Settings — Wealth Hackers" },
       { name: "description", content: "Choose your currency, theme and manage categories and sample data." },
-      { property: "og:title", content: "Settings — Pocketwise" },
+      { property: "og:title", content: "Settings — Wealth Hackers" },
       { property: "og:description", content: "Choose your currency, theme and manage categories and sample data." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

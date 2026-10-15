@@ -1,9 +1,10 @@
 import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
-import { LayoutDashboard, ListOrdered, Moon, Settings, Sun, Wallet } from "lucide-react";
+import { LayoutDashboard, ListOrdered, Moon, Settings, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useFinance } from "@/hooks/use-finance";
 import { AssistantPanel } from "@/components/assistant/AssistantPanel";
+import logo from "@/assets/wealth-hackers-logo.png.asset.json";
 
 const nav = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
@@ -17,11 +18,14 @@ export function AppShell({ children }: { children: ReactNode }) {
     <div className="min-h-screen pb-24">
       <header className="sticky top-0 z-30 border-b bg-background/85 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3">
-          <Link to="/" className="flex items-center gap-2 font-display text-lg font-semibold">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <Wallet className="h-4 w-4" />
+          <Link to="/" className="flex min-w-0 items-center gap-2 font-display font-semibold">
+            <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded-md">
+              <img src={logo.url} alt="Wealth Hackers logo" className="absolute left-1/2 top-1/2 h-auto w-[170px] max-w-none -translate-x-1/2 -translate-y-[34%]" />
             </span>
-            <span className="hidden sm:inline">Pocketwise</span>
+            <span className="min-w-0">
+              <span className="block text-sm sm:text-lg">Wealth Hackers</span>
+              <span className="hidden font-sans text-xs font-normal text-muted-foreground sm:block">Strategic Growth | Digital Insight</span>
+            </span>
           </Link>
           <nav className="ml-auto flex items-center gap-1">
             {nav.map(({ to, label, icon: Icon }) => (
