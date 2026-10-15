@@ -71,7 +71,7 @@ export function SavingsGoalCard({ net }: { net: number }) {
             <Progress value={pct} className="h-3" />
             <div className="flex justify-between text-sm">
               <span className="font-medium">{pct.toFixed(0)}%</span>
-              <span className="text-muted-foreground">{remaining > 0 ? `${money(remaining)} to go` : "Goal reached 🎉"}</span>
+              <span className="text-muted-foreground">{remaining > 0 ? `${money(remaining)} to go` : "Goal reached"}</span>
             </div>
           </>
         )}
