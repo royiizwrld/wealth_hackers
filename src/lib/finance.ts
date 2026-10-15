@@ -124,11 +124,11 @@ export function buildSummary(
   const months: Record<string, Record<string, number>> = {};
   for (const t of txs) {
     const m = monthKey(t.date);
-    months[m] ??= { _income: 0, _expenses: 0 };
-    if (t.type === "income") months[m]._income += t.amount;
+    const row = (months[m] ??= { _income: 0, _expenses: 0 });
+    if (t.type === "income") row["_income"] = (row["_income"] ?? 0) + t.amount;
     else {
-      months[m]._expenses += t.amount;
-      months[m][t.category] = (months[m][t.category] ?? 0) + t.amount;
+      row["_expenses"] = (row["_expenses"] ?? 0) + t.amount;
+      row[t.category] = (row[t.category] ?? 0) + t.amount;
     }
   }
   const recent = [...txs]

@@ -18,7 +18,7 @@ export function parseAIRows(raw: unknown, categories: string[]): Omit<ParsedRow,
   const out: Omit<ParsedRow, "id">[] = [];
   for (const item of list) {
     if (!item || typeof item !== "object") continue;
-    const r = item as Record<string, unknown>;
+    const r = item as { amount?: unknown; date?: unknown; category?: unknown; type?: unknown; note?: unknown; confidence?: unknown; reason?: unknown };
     const amount = Math.abs(Number(String(r.amount ?? "").replace(/[^0-9.-]/g, "")));
     const dateOk = typeof r.date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(r.date);
     const cat = categories.find((c) => c.toLowerCase() === String(r.category ?? "").toLowerCase());

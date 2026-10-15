@@ -19,7 +19,7 @@ describe("finance rules", () => {
   it("returns null on invalid AI JSON and low confidence on unknown category", () => {
     expect(parseAIRows("not json", ["Food"])).toBeNull();
     const rows = parseAIRows('{"transactions":[{"date":"2026-10-01","amount":450,"type":"expense","category":"Snacks","note":"x"}]}', ["Food", "Other"]);
-    expect(rows?.[0].category).toBe("Other");
-    expect(rows?.[0].confidence).toBe("low");
+    expect(rows?.[0]?.category).toBe("Other");
+    expect(rows?.[0]?.confidence).toBe("low");
   });
 });
