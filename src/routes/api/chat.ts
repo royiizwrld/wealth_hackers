@@ -31,7 +31,36 @@ export const Route = createFileRoute("/api/chat")({
             providerOptions: responseOptions,
             abortSignal: request.signal,
           });
-          return result.toTextStreamResponse();
+          const it = result.fullStream[Symbol.asyncIterator]();
+          // Wait for the first text (or an error) so failures return a proper status.
+          let first = "";
+          for (;;) {
+            const { value, done } = await it.next();
+            if (done) break;
+            if (value.type === "error") throw value.error;
+            if (value.type === "text-delta") {
+              first = value.text;
+              break;
+            }
+          }
+          const enc = new TextEncoder();
+          const stream = new ReadableStream({
+            async start(controller) {
+              if (first) controller.enqueue(enc.encode(first));
+              try {
+                for (;;) {
+                  const { value, done } = await it.next();
+                  if (done) break;
+                  if (value.type === "text-delta") controller.enqueue(enc.encode(value.text));
+                  if (value.type === "error") throw value.error;
+                }
+              } catch {
+                controller.enqueue(enc.encode("\n\n_The response was interrupted. Please try again._"));
+              }
+              controller.close();
+            },
+          });
+          return new Response(stream, { headers: { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "no-cache" } });
         } catch (err) {
           const f = friendlyError(err);
           return Response.json({ error: f.message }, { status: f.status });
