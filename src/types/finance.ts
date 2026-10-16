@@ -7,6 +7,8 @@ export interface Transaction {
   type: TransactionType;
   category: string;
   note?: string | undefined;
+  originalAmount?: number | undefined;
+  originalCurrency?: string | undefined;
   sample?: boolean;
 }
 
