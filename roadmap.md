@@ -1,3 +1,3 @@
-- [ ] Add voice typing to the chatbot and Smart bulk entry.
-- [ ] Replace Pocketwise branding with the uploaded Wealth Hackers logo and vision, including favicon.
+- [x] Add voice typing to the chatbot and Smart bulk entry.
+- [x] Replace Pocketwise branding with the uploaded Wealth Hackers logo and vision, including favicon.
 - [ ] Verify dictation controls, branding, and existing tests.
