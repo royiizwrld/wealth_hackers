@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useFinance } from "@/hooks/use-finance";
-import { monthKey, todayISO } from "@/lib/finance";
+import { CURRENCIES, monthKey, todayISO } from "@/lib/finance";
 import type { Transaction, TransactionType } from "@/types/finance";
 
 interface Props {
@@ -133,7 +133,7 @@ export function TransactionForm({ open, onOpenChange, editing }: Props) {
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <Label htmlFor="amount">Amount</Label>
+              <Label htmlFor="amount">Amount{foreign ? ` (${payCurrency})` : ` (${f.currency})`}</Label>
               <Input id="amount" type="number" step="0.01" min="0" value={amount} onChange={(e) => setAmount(e.target.value)} />
               {errors.amount && <p className="text-xs text-destructive">{errors.amount}</p>}
             </div>
@@ -142,6 +142,21 @@ export function TransactionForm({ open, onOpenChange, editing }: Props) {
               <Input id="date" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
               {errors.date && <p className="text-xs text-destructive">{errors.date}</p>}
             </div>
+          </div>
+          <div className="space-y-1.5">
+            <Label>Paid in another currency? (optional)</Label>
+            <Select value={payCurrency || f.currency} onValueChange={setPayCurrency}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {CURRENCIES.map((c) => <SelectItem key={c.code} value={c.code}>{c.code} — {c.name}</SelectItem>)}
+              </SelectContent>
+            </Select>
+            {rateLoading && <p className="text-xs text-muted-foreground">Loading today's rate…</p>}
+            {converted != null && (
+              <p className="text-xs text-muted-foreground">
+                = {f.money(converted)} at today's rate (1 {payCurrency} ≈ {rate.toFixed(4)} {f.currency})
+              </p>
+            )}
           </div>
           <div className="space-y-1.5">
             <Label>Category</Label>
