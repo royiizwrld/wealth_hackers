@@ -51,6 +51,15 @@ export function TransactionForm({ open, onOpenChange, editing }: Props) {
     } else {
       addTransactions([data]);
       toast.success("Transaction added");
+      const limit = f.budgets[category];
+      if (type === "expense" && limit) {
+        const m = monthKey(date);
+        const spent = f.transactions
+          .filter((t) => t.type === "expense" && t.category === category && monthKey(t.date) === m)
+          .reduce((s, t) => s + t.amount, 0) + data.amount;
+        if (spent > limit) toast.error(`Over budget: ${category} is at ${f.money(spent)} of ${f.money(limit)} this month`);
+        else if (spent >= limit * 0.8) toast.warning(`Heads up: ${category} is at ${Math.round((spent / limit) * 100)}% of its monthly budget`);
+      }
     }
     onOpenChange(false);
   };
