@@ -14,7 +14,7 @@ const nav = [
 ] as const;
 
 export function AppShell({ children }: { children: ReactNode }) {
-  const { theme, setTheme } = useFinance();
+  const { theme, setTheme, user } = useFinance();
   return (
     <div className="min-h-screen pb-24">
       <header className="sticky top-0 z-30 border-b bg-background/85 backdrop-blur">
