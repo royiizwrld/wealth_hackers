@@ -69,11 +69,22 @@ export function TransactionForm({ open, onOpenChange, editing }: Props) {
     const n = Number(amount);
     const errs: Partial<Record<"amount" | "date" | "category", string>> = {};
     if (!amount || !Number.isFinite(n) || n <= 0) errs.amount = "Enter a positive amount";
+    if (payCurrency && payCurrency !== f.currency && rate == null && !rateLoading) errs.amount = `No exchange rate for ${payCurrency} — pick another currency or try again`;
     if (!date) errs.date = "Date is required";
     if (!category) errs.category = "Pick a category";
     setErrors(errs);
     if (Object.keys(errs).length) return;
-    const data = { amount: Math.round(n * 100) / 100, date, type, category, note: note.trim() || undefined };
+    const isForeign = payCurrency && payCurrency !== f.currency && rate != null;
+    const finalAmount = isForeign ? Math.round(n * rate * 100) / 100 : Math.round(n * 100) / 100;
+    const data = {
+      amount: finalAmount,
+      date,
+      type,
+      category,
+      note: note.trim() || undefined,
+      originalAmount: isForeign ? Math.round(n * 100) / 100 : undefined,
+      originalCurrency: isForeign ? payCurrency : undefined,
+    };
     if (editing) {
       updateTransaction({ ...editing, ...data });
       toast.success("Transaction updated");
