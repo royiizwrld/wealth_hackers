@@ -15,6 +15,7 @@ import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as TransactionsRouteImport } from './routes/transactions'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as ApiParseRouteImport } from './routes/api/parse'
+import { Route as ApiRatesRouteImport } from './routes/api/rates'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -46,6 +47,11 @@ const ApiParseRoute = ApiParseRouteImport.update({
   path: '/api/parse',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiRatesRoute = ApiRatesRouteImport.update({
+  id: '/api/rates',
+  path: '/api/rates',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -54,6 +60,7 @@ export interface FileRoutesByFullPath {
   '/transactions': typeof TransactionsRoute
   '/api/chat': typeof ApiChatRoute
   '/api/parse': typeof ApiParseRoute
+  '/api/rates': typeof ApiRatesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -62,6 +69,7 @@ export interface FileRoutesByTo {
   '/transactions': typeof TransactionsRoute
   '/api/chat': typeof ApiChatRoute
   '/api/parse': typeof ApiParseRoute
+  '/api/rates': typeof ApiRatesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -71,14 +79,27 @@ export interface FileRoutesById {
   '/transactions': typeof TransactionsRoute
   '/api/chat': typeof ApiChatRoute
   '/api/parse': typeof ApiParseRoute
+  '/api/rates': typeof ApiRatesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/budget' | '/settings' | '/transactions' | '/api/chat' | '/api/parse'
+    | '/'
+    | '/budget'
+    | '/settings'
+    | '/transactions'
+    | '/api/chat'
+    | '/api/parse'
+    | '/api/rates'
   fileRoutesByTo: FileRoutesByTo
   to:
-    '/' | '/budget' | '/settings' | '/transactions' | '/api/chat' | '/api/parse'
+    | '/'
+    | '/budget'
+    | '/settings'
+    | '/transactions'
+    | '/api/chat'
+    | '/api/parse'
+    | '/api/rates'
   id:
     | '__root__'
     | '/'
@@ -87,6 +108,7 @@ export interface FileRouteTypes {
     | '/transactions'
     | '/api/chat'
     | '/api/parse'
+    | '/api/rates'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -96,6 +118,7 @@ export interface RootRouteChildren {
   TransactionsRoute: typeof TransactionsRoute
   ApiChatRoute: typeof ApiChatRoute
   ApiParseRoute: typeof ApiParseRoute
+  ApiRatesRoute: typeof ApiRatesRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -142,6 +165,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiParseRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/rates': {
+      id: '/api/rates'
+      path: '/api/rates'
+      fullPath: '/api/rates'
+      preLoaderRoute: typeof ApiRatesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -152,6 +182,7 @@ const rootRouteChildren: RootRouteChildren = {
   TransactionsRoute: TransactionsRoute,
   ApiChatRoute: ApiChatRoute,
   ApiParseRoute: ApiParseRoute,
+  ApiRatesRoute: ApiRatesRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

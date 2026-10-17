@@ -24,17 +24,45 @@ export function TransactionForm({ open, onOpenChange, editing }: Props) {
   const [category, setCategory] = useState("");
   const [note, setNote] = useState("");
   const [newCat, setNewCat] = useState("");
+  const [payCurrency, setPayCurrency] = useState("");
+  const [rate, setRate] = useState<number | null>(null);
+  const [rateLoading, setRateLoading] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<"amount" | "date" | "category", string>>>({});
 
   useEffect(() => {
     if (!open) return;
-    setAmount(editing ? String(editing.amount) : "");
+    setAmount(editing ? String(editing.originalAmount ?? editing.amount) : "");
     setDate(editing?.date ?? todayISO());
     setType(editing?.type ?? "expense");
     setCategory(editing?.category ?? "");
     setNote(editing?.note ?? "");
+    setPayCurrency(editing?.originalCurrency ?? "");
+    setRate(null);
     setErrors({});
   }, [open, editing]);
+
+  // Fetch the live rate when a foreign currency is chosen.
+  useEffect(() => {
+    if (!payCurrency || payCurrency === f.currency) { setRate(null); return; }
+    let cancelled = false;
+    setRateLoading(true);
+    fetch(`/api/rates?base=${payCurrency}`)
+      .then((r) => r.json())
+      .then((d: { rates?: Record<string, number> }) => {
+        if (cancelled) return;
+        const r = d.rates?.[f.currency];
+        setRate(typeof r === "number" ? r : null);
+        if (typeof r !== "number") toast.error(`No rate available for ${payCurrency} → ${f.currency}`);
+      })
+      .catch(() => !cancelled && toast.error("Could not load exchange rates right now"))
+      .finally(() => !cancelled && setRateLoading(false));
+    return () => { cancelled = true; };
+  }, [payCurrency, f.currency]);
+
+  const foreign = payCurrency && payCurrency !== f.currency && rate != null;
+  const converted = foreign && amount && Number.isFinite(Number(amount))
+    ? Math.round(Number(amount) * rate * 100) / 100
+    : null;
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
