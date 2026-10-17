@@ -43,9 +43,37 @@ function SettingsPage() {
         </CardContent>
       </Card>
       <Card>
-        <CardContent className="flex items-center justify-between p-5">
-          <span className="font-medium">Dark mode</span>
-          <Switch checked={f.theme === "dark"} onCheckedChange={(v) => f.setTheme(v ? "dark" : "light")} />
+        <CardHeader><CardTitle className="text-base">Theme</CardTitle></CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+            {PALETTES.map((p) => {
+              const active = f.palette === p.id;
+              return (
+                <button
+                  key={p.id}
+                  type="button"
+                  onClick={() => { f.setPalette(p.id); toast.success(`Theme set to ${p.name}`); }}
+                  className={`relative rounded-xl border p-3 text-left transition hover:border-primary/60 ${active ? "border-primary ring-2 ring-primary/40" : ""}`}
+                >
+                  <span className="mb-2 flex gap-1.5">
+                    {p.swatches.map((s) => (
+                      <span key={s} className="h-5 w-5 rounded-full border" style={{ backgroundColor: s }} />
+                    ))}
+                  </span>
+                  <span className="text-sm font-medium">{p.name}</span>
+                  {active && (
+                    <span className="absolute right-2 top-2 rounded-full bg-primary p-0.5 text-primary-foreground">
+                      <Check className="h-3 w-3" />
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+          <div className="flex items-center justify-between border-t pt-4">
+            <span className="font-medium">Dark mode</span>
+            <Switch checked={f.theme === "dark"} onCheckedChange={(v) => f.setTheme(v ? "dark" : "light")} />
+          </div>
         </CardContent>
       </Card>
       <Card>
