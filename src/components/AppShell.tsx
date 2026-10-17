@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
-import { LayoutDashboard, ListOrdered, Moon, Settings, Sun } from "lucide-react";
+import { LayoutDashboard, ListOrdered, Moon, Settings, Sun, User, Wallet } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useFinance } from "@/hooks/use-finance";
 import { AssistantPanel } from "@/components/assistant/AssistantPanel";
@@ -9,11 +9,12 @@ import logo from "@/assets/wealth-hackers-logo.png.asset.json";
 const nav = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
   { to: "/transactions", label: "Transactions", icon: ListOrdered },
+  { to: "/budget", label: "Budgets", icon: Wallet },
   { to: "/settings", label: "Settings", icon: Settings },
 ] as const;
 
 export function AppShell({ children }: { children: ReactNode }) {
-  const { theme, setTheme } = useFinance();
+  const { theme, setTheme, user } = useFinance();
   return (
     <div className="min-h-screen pb-24">
       <header className="sticky top-0 z-30 border-b bg-background/85 backdrop-blur">
@@ -47,6 +48,13 @@ export function AppShell({ children }: { children: ReactNode }) {
             >
               {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </Button>
+            <Link
+              to="/auth"
+              className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-muted data-[status=active]:bg-secondary data-[status=active]:text-foreground"
+            >
+              <User className="h-4 w-4" />
+              <span className="hidden md:inline">{user ? "Account" : "Sign in"}</span>
+            </Link>
           </nav>
         </div>
       </header>

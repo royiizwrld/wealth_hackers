@@ -10,14 +10,27 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as BudgetRouteImport } from './routes/budget'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as TransactionsRouteImport } from './routes/transactions'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as ApiParseRouteImport } from './routes/api/parse'
+import { Route as ApiRatesRouteImport } from './routes/api/rates'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BudgetRoute = BudgetRouteImport.update({
+  id: '/budget',
+  path: '/budget',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsRoute = SettingsRouteImport.update({
@@ -40,49 +53,85 @@ const ApiParseRoute = ApiParseRouteImport.update({
   path: '/api/parse',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiRatesRoute = ApiRatesRouteImport.update({
+  id: '/api/rates',
+  path: '/api/rates',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/budget': typeof BudgetRoute
   '/settings': typeof SettingsRoute
   '/transactions': typeof TransactionsRoute
   '/api/chat': typeof ApiChatRoute
   '/api/parse': typeof ApiParseRoute
+  '/api/rates': typeof ApiRatesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/budget': typeof BudgetRoute
   '/settings': typeof SettingsRoute
   '/transactions': typeof TransactionsRoute
   '/api/chat': typeof ApiChatRoute
   '/api/parse': typeof ApiParseRoute
+  '/api/rates': typeof ApiRatesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/budget': typeof BudgetRoute
   '/settings': typeof SettingsRoute
   '/transactions': typeof TransactionsRoute
   '/api/chat': typeof ApiChatRoute
   '/api/parse': typeof ApiParseRoute
+  '/api/rates': typeof ApiRatesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/settings' | '/transactions' | '/api/chat' | '/api/parse'
-  fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/settings' | '/transactions' | '/api/chat' | '/api/parse'
-  id:
-    | '__root__'
+  fullPaths:
     | '/'
+    | '/auth'
+    | '/budget'
     | '/settings'
     | '/transactions'
     | '/api/chat'
     | '/api/parse'
+    | '/api/rates'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/'
+    | '/auth'
+    | '/budget'
+    | '/settings'
+    | '/transactions'
+    | '/api/chat'
+    | '/api/parse'
+    | '/api/rates'
+  id:
+    | '__root__'
+    | '/'
+    | '/auth'
+    | '/budget'
+    | '/settings'
+    | '/transactions'
+    | '/api/chat'
+    | '/api/parse'
+    | '/api/rates'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRoute
+  BudgetRoute: typeof BudgetRoute
   SettingsRoute: typeof SettingsRoute
   TransactionsRoute: typeof TransactionsRoute
   ApiChatRoute: typeof ApiChatRoute
   ApiParseRoute: typeof ApiParseRoute
+  ApiRatesRoute: typeof ApiRatesRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -92,6 +141,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/budget': {
+      id: '/budget'
+      path: '/budget'
+      fullPath: '/budget'
+      preLoaderRoute: typeof BudgetRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/settings': {
@@ -122,15 +185,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiParseRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/rates': {
+      id: '/api/rates'
+      path: '/api/rates'
+      fullPath: '/api/rates'
+      preLoaderRoute: typeof ApiRatesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRoute: AuthRoute,
+  BudgetRoute: BudgetRoute,
   SettingsRoute: SettingsRoute,
   TransactionsRoute: TransactionsRoute,
   ApiChatRoute: ApiChatRoute,
   ApiParseRoute: ApiParseRoute,
+  ApiRatesRoute: ApiRatesRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
