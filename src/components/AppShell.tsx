@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
-import { LayoutDashboard, ListOrdered, Moon, Settings, Sun } from "lucide-react";
+import { LayoutDashboard, ListOrdered, Moon, Settings, Sun, Wallet } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useFinance } from "@/hooks/use-finance";
 import { AssistantPanel } from "@/components/assistant/AssistantPanel";
@@ -9,6 +9,7 @@ import logo from "@/assets/wealth-hackers-logo.png.asset.json";
 const nav = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
   { to: "/transactions", label: "Transactions", icon: ListOrdered },
+  { to: "/budget", label: "Budgets", icon: Wallet },
   { to: "/settings", label: "Settings", icon: Settings },
 ] as const;
 

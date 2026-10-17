@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useFinance } from "@/hooks/use-finance";
-import { todayISO } from "@/lib/finance";
+import { monthKey, todayISO } from "@/lib/finance";
 import type { Transaction, TransactionType } from "@/types/finance";
 
 interface Props {
@@ -16,7 +16,8 @@ interface Props {
 }
 
 export function TransactionForm({ open, onOpenChange, editing }: Props) {
-  const { categories, addTransactions, updateTransaction, addCategory } = useFinance();
+  const f = useFinance();
+  const { categories, addTransactions, updateTransaction, addCategory } = f;
   const [amount, setAmount] = useState("");
   const [date, setDate] = useState(todayISO());
   const [type, setType] = useState<TransactionType>("expense");
