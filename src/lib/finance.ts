@@ -12,6 +12,15 @@ export const DEFAULT_CATEGORIES = [
   "Other",
 ];
 
+export const PALETTES: { id: string; name: string; swatches: [string, string, string] }[] = [
+  { id: "default", name: "Wealth Hackers", swatches: ["#1f5c50", "#e0a428", "#f7f4ec"] },
+  { id: "ocean", name: "Ocean", swatches: ["#2f5f9e", "#5bc8d8", "#eef4fa"] },
+  { id: "sunset", name: "Sunset", swatches: ["#c26a3d", "#f0c060", "#faf3ea"] },
+  { id: "emerald", name: "Emerald", swatches: ["#1f7a55", "#a8d94e", "#eef7f0"] },
+  { id: "violet", name: "Royal Violet", swatches: ["#6a3d9e", "#d8a8d0", "#f6f0fa"] },
+  { id: "slate", name: "Midnight Slate", swatches: ["#33415c", "#4f8fd8", "#eef1f6"] },
+];
+
 export const CURRENCIES: { code: string; name: string }[] = [
   { code: "KES", name: "Kenyan Shilling" },
   { code: "USD", name: "US Dollar" },

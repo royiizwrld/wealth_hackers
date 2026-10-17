@@ -7,7 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useFinance } from "@/hooks/use-finance";
-import { CURRENCIES, formatMoney } from "@/lib/finance";
+import { CURRENCIES, PALETTES, formatMoney } from "@/lib/finance";
+import { Check } from "lucide-react";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({
