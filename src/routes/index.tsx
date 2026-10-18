@@ -6,6 +6,7 @@ import { useFinance } from "@/hooks/use-finance";
 import { byMonth, inRange, monthKey, spendingByCategory, todayISO, totals } from "@/lib/finance";
 import { CategoryDonut, MonthlyBars, RecentList, SavingsGoalCard, SummaryCards } from "@/components/dashboard/DashboardWidgets";
 import { DateRangeInputs } from "@/components/DateRangeInputs";
+import { CurrencyConverter } from "@/components/dashboard/CurrencyConverter";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -43,7 +44,8 @@ function Dashboard() {
       <SummaryCards {...sum} />
       <div className="grid gap-4 lg:grid-cols-3">
         <SavingsGoalCard net={sum.net} />
-        <Card className="lg:col-span-2">
+        <CurrencyConverter />
+        <Card>
           <CardContent className="flex h-full flex-col justify-center gap-2 p-5">
             <p className="text-sm font-medium">Chart date range</p>
             <DateRangeInputs />
