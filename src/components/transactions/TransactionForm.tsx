@@ -152,7 +152,7 @@ export function TransactionForm({ open, onOpenChange, editing }: Props) {
               </SelectContent>
             </Select>
             {rateLoading && <p className="text-xs text-muted-foreground">Loading today's rate…</p>}
-            {converted != null && (
+            {converted != null && rate != null && (
               <p className="text-xs text-muted-foreground">
                 = {f.money(converted)} at today's rate (1 {payCurrency} ≈ {rate.toFixed(4)} {f.currency})
               </p>
