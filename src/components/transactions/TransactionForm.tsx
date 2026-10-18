@@ -75,7 +75,7 @@ export function TransactionForm({ open, onOpenChange, editing }: Props) {
     setErrors(errs);
     if (Object.keys(errs).length) return;
     const isForeign = payCurrency && payCurrency !== f.currency && rate != null;
-    const finalAmount = isForeign ? Math.round(n * rate * 100) / 100 : Math.round(n * 100) / 100;
+    const finalAmount = isForeign && rate != null ? Math.round(n * rate * 100) / 100 : Math.round(n * 100) / 100;
     const data = {
       amount: finalAmount,
       date,
