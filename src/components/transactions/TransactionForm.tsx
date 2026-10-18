@@ -133,7 +133,7 @@ export function TransactionForm({ open, onOpenChange, editing }: Props) {
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <Label htmlFor="amount">Amount{foreign ? ` (${payCurrency})` : ` (${f.currency})`}</Label>
+              <Label htmlFor="amount">Amount ({payCurrency || f.currency})</Label>
               <Input id="amount" type="number" step="0.01" min="0" value={amount} onChange={(e) => setAmount(e.target.value)} />
               {errors.amount && <p className="text-xs text-destructive">{errors.amount}</p>}
             </div>
