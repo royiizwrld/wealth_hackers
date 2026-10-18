@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
-import { LayoutDashboard, ListOrdered, Moon, Settings, Sun, User, Wallet } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { LayoutDashboard, ListOrdered, Settings, User, Wallet } from "lucide-react";
 import { useFinance } from "@/hooks/use-finance";
 import { AssistantPanel } from "@/components/assistant/AssistantPanel";
 import logo from "@/assets/wealth-hackers-logo.png.asset.json";
@@ -14,9 +13,11 @@ const nav = [
 ] as const;
 
 export function AppShell({ children }: { children: ReactNode }) {
-  const { theme, setTheme, user } = useFinance();
+  const { user } = useFinance();
+  const linkCls =
+    "flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-muted data-[status=active]:bg-secondary data-[status=active]:text-foreground";
   return (
-    <div className="min-h-screen pb-24">
+    <div className="min-h-screen pb-24 md:pb-8">
       <header className="sticky top-0 z-30 border-b bg-background/85 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3">
           <Link to="/" className="flex min-w-0 items-center gap-2 font-display font-semibold">
@@ -30,35 +31,35 @@ export function AppShell({ children }: { children: ReactNode }) {
           </Link>
           <nav className="ml-auto flex items-center gap-1">
             {nav.map(({ to, label, icon: Icon }) => (
-              <Link
-                key={to}
-                to={to}
-                activeOptions={{ exact: true }}
-                className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-muted data-[status=active]:bg-secondary data-[status=active]:text-foreground"
-              >
+              <Link key={to} to={to} activeOptions={{ exact: true }} className={`hidden md:flex ${linkCls}`}>
                 <Icon className="h-4 w-4" />
-                <span className="hidden md:inline">{label}</span>
+                <span>{label}</span>
               </Link>
             ))}
-            <Button
-              variant="ghost"
-              size="icon"
-              aria-label="Toggle theme"
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            >
-              {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-            </Button>
-            <Link
-              to="/auth"
-              className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-muted data-[status=active]:bg-secondary data-[status=active]:text-foreground"
-            >
+            <Link to="/auth" className={linkCls}>
               <User className="h-4 w-4" />
-              <span className="hidden md:inline">{user ? "Account" : "Sign in"}</span>
+              <span>{user ? "Account" : "Sign in"}</span>
             </Link>
           </nav>
         </div>
       </header>
       <main className="mx-auto max-w-6xl px-4 py-6">{children}</main>
+      <nav
+        aria-label="Main"
+        className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 border-t bg-background/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden"
+      >
+        {nav.map(({ to, label, icon: Icon }) => (
+          <Link
+            key={to}
+            to={to}
+            activeOptions={{ exact: true }}
+            className="flex flex-col items-center gap-1 py-2 text-xs text-muted-foreground data-[status=active]:font-medium data-[status=active]:text-primary"
+          >
+            <Icon className="h-5 w-5" />
+            {label}
+          </Link>
+        ))}
+      </nav>
       <AssistantPanel />
     </div>
   );
