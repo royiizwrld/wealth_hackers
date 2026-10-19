@@ -23,6 +23,11 @@ const STARTERS = [
 export function AssistantPanel() {
   const fin = useFinance();
   const [open, setOpen] = useState(false);
+  useEffect(() => {
+    const h = () => setOpen(true);
+    window.addEventListener("open-assistant", h);
+    return () => window.removeEventListener("open-assistant", h);
+  }, []);
   const [threads, setThreads] = useState<Thread[]>([]);
   const [activeId, setActiveId] = useState<string>("");
   const [showHistory, setShowHistory] = useState(false);
