@@ -57,6 +57,7 @@ function Dashboard() {
         <CategoryDonut data={spendingByCategory(ranged)} />
         <MonthlyBars data={byMonth(ranged)} />
       </div>
+      <BudgetProgress month={month} />
       <RecentList items={recent} />
     </div>
   );

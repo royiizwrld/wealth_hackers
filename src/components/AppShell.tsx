@@ -1,21 +1,26 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
-import { LayoutDashboard, ListOrdered, Settings, User, Wallet } from "lucide-react";
+import { ArrowRightLeft, LayoutDashboard, ListOrdered, MessageCircle, Settings, User, Wallet } from "lucide-react";
 import { useFinance } from "@/hooks/use-finance";
 import { AssistantPanel } from "@/components/assistant/AssistantPanel";
+import { ConverterTool } from "@/components/dashboard/CurrencyConverter";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import logo from "@/assets/wealth-hackers-logo.png.asset.json";
 
 const nav = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
   { to: "/transactions", label: "Transactions", icon: ListOrdered },
   { to: "/budget", label: "Budgets", icon: Wallet },
+  { to: "/converter", label: "Converter", icon: ArrowRightLeft },
   { to: "/settings", label: "Settings", icon: Settings },
 ] as const;
 
 export function AppShell({ children }: { children: ReactNode }) {
   const { user } = useFinance();
+  const [fxOpen, setFxOpen] = useState(false);
   const linkCls =
     "flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-muted data-[status=active]:bg-secondary data-[status=active]:text-foreground";
+  const tabCls = "flex flex-col items-center gap-1 py-2 text-[11px] text-muted-foreground data-[status=active]:font-medium data-[status=active]:text-primary";
   return (
     <div className="min-h-screen pb-24 md:pb-8">
       <header className="sticky top-0 z-30 border-b bg-background/85 backdrop-blur">
@@ -46,20 +51,24 @@ export function AppShell({ children }: { children: ReactNode }) {
       <main className="mx-auto max-w-6xl px-4 py-6">{children}</main>
       <nav
         aria-label="Main"
-        className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 border-t bg-background/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden"
+        className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-6 border-t bg-background/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden"
       >
-        {nav.map(({ to, label, icon: Icon }) => (
-          <Link
-            key={to}
-            to={to}
-            activeOptions={{ exact: true }}
-            className="flex flex-col items-center gap-1 py-2 text-xs text-muted-foreground data-[status=active]:font-medium data-[status=active]:text-primary"
-          >
-            <Icon className="h-5 w-5" />
-            {label}
-          </Link>
-        ))}
+        <Link to="/" activeOptions={{ exact: true }} className={tabCls}><LayoutDashboard className="h-5 w-5" />Home</Link>
+        <Link to="/transactions" className={tabCls}><ListOrdered className="h-5 w-5" />Activity</Link>
+        <Link to="/budget" className={tabCls}><Wallet className="h-5 w-5" />Budgets</Link>
+        <button type="button" onClick={() => setFxOpen(true)} className={tabCls}><ArrowRightLeft className="h-5 w-5" />Convert</button>
+        <button type="button" onClick={() => window.dispatchEvent(new Event("open-assistant"))} className={tabCls}><MessageCircle className="h-5 w-5" />Coach</button>
+        <Link to="/settings" className={tabCls}><Settings className="h-5 w-5" />Settings</Link>
       </nav>
+      <Drawer open={fxOpen} onOpenChange={setFxOpen}>
+        <DrawerContent>
+          <DrawerHeader><DrawerTitle>Currency converter</DrawerTitle></DrawerHeader>
+          <div className="space-y-3 px-4 pb-6">
+            <ConverterTool />
+            <Link to="/converter" onClick={() => setFxOpen(false)} className="block text-center text-sm text-primary underline">Open full converter with history</Link>
+          </div>
+        </DrawerContent>
+      </Drawer>
       <AssistantPanel />
     </div>
   );
