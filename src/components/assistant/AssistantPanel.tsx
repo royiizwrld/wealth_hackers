@@ -23,6 +23,11 @@ const STARTERS = [
 export function AssistantPanel() {
   const fin = useFinance();
   const [open, setOpen] = useState(false);
+  useEffect(() => {
+    const h = () => setOpen(true);
+    window.addEventListener("open-assistant", h);
+    return () => window.removeEventListener("open-assistant", h);
+  }, []);
   const [threads, setThreads] = useState<Thread[]>([]);
   const [activeId, setActiveId] = useState<string>("");
   const [showHistory, setShowHistory] = useState(false);
@@ -125,7 +130,7 @@ export function AssistantPanel() {
         onClick={() => setOpen(true)}
         size="icon"
         aria-label="Open finance assistant"
-        className="fixed bottom-20 right-4 z-40 h-14 w-14 rounded-full shadow-xl md:bottom-5 md:right-5"
+        className="fixed bottom-5 right-5 z-40 hidden h-14 w-14 rounded-full shadow-xl md:inline-flex"
       >
         <MessageCircle className="h-6 w-6" />
       </Button>

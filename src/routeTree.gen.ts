@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as BudgetRouteImport } from './routes/budget'
+import { Route as ConverterRouteImport } from './routes/converter'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as TransactionsRouteImport } from './routes/transactions'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
@@ -31,6 +32,11 @@ const AuthRoute = AuthRouteImport.update({
 const BudgetRoute = BudgetRouteImport.update({
   id: '/budget',
   path: '/budget',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConverterRoute = ConverterRouteImport.update({
+  id: '/converter',
+  path: '/converter',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsRoute = SettingsRouteImport.update({
@@ -63,6 +69,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/budget': typeof BudgetRoute
+  '/converter': typeof ConverterRoute
   '/settings': typeof SettingsRoute
   '/transactions': typeof TransactionsRoute
   '/api/chat': typeof ApiChatRoute
@@ -73,6 +80,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/budget': typeof BudgetRoute
+  '/converter': typeof ConverterRoute
   '/settings': typeof SettingsRoute
   '/transactions': typeof TransactionsRoute
   '/api/chat': typeof ApiChatRoute
@@ -84,6 +92,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/budget': typeof BudgetRoute
+  '/converter': typeof ConverterRoute
   '/settings': typeof SettingsRoute
   '/transactions': typeof TransactionsRoute
   '/api/chat': typeof ApiChatRoute
@@ -96,6 +105,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/budget'
+    | '/converter'
     | '/settings'
     | '/transactions'
     | '/api/chat'
@@ -106,6 +116,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/budget'
+    | '/converter'
     | '/settings'
     | '/transactions'
     | '/api/chat'
@@ -116,6 +127,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/budget'
+    | '/converter'
     | '/settings'
     | '/transactions'
     | '/api/chat'
@@ -127,6 +139,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
   BudgetRoute: typeof BudgetRoute
+  ConverterRoute: typeof ConverterRoute
   SettingsRoute: typeof SettingsRoute
   TransactionsRoute: typeof TransactionsRoute
   ApiChatRoute: typeof ApiChatRoute
@@ -155,6 +168,13 @@ declare module '@tanstack/react-router' {
       path: '/budget'
       fullPath: '/budget'
       preLoaderRoute: typeof BudgetRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/converter': {
+      id: '/converter'
+      path: '/converter'
+      fullPath: '/converter'
+      preLoaderRoute: typeof ConverterRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/settings': {
@@ -199,6 +219,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
   BudgetRoute: BudgetRoute,
+  ConverterRoute: ConverterRoute,
   SettingsRoute: SettingsRoute,
   TransactionsRoute: TransactionsRoute,
   ApiChatRoute: ApiChatRoute,

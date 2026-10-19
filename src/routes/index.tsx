@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -57,7 +57,38 @@ function Dashboard() {
         <CategoryDonut data={spendingByCategory(ranged)} />
         <MonthlyBars data={byMonth(ranged)} />
       </div>
+      <BudgetProgress month={month} />
       <RecentList items={recent} />
     </div>
+  );
+}
+
+function BudgetProgress({ month }: { month: string }) {
+  const f = useFinance();
+  const cats = Object.keys(f.budgets);
+  if (cats.length === 0) return null;
+  const spent = new Map<string, number>();
+  for (const t of f.transactions) if (t.type === "expense" && monthKey(t.date) === month) spent.set(t.category, (spent.get(t.category) ?? 0) + t.amount);
+  return (
+    <Card>
+      <CardContent className="space-y-3 p-5">
+        <div className="flex items-center justify-between">
+          <p className="font-medium">Budget progress</p>
+          <Link to="/budget" className="text-sm text-primary underline">Manage</Link>
+        </div>
+        {cats.map((c) => {
+          const limit = f.budgets[c] ?? 0;
+          const used = spent.get(c) ?? 0;
+          const pct = limit > 0 ? (used / limit) * 100 : 0;
+          const tone = pct >= 100 ? "bg-destructive" : pct >= 80 ? "bg-expense" : "bg-primary";
+          return (
+            <div key={c} className="space-y-1">
+              <div className="flex justify-between text-sm"><span>{c}</span><span className="text-muted-foreground">{f.money(used)} / {f.money(limit)}</span></div>
+              <div className="h-2 overflow-hidden rounded-full bg-muted"><div className={`h-full ${tone}`} style={{ width: `${Math.min(pct, 100)}%` }} /></div>
+            </div>
+          );
+        })}
+      </CardContent>
+    </Card>
   );
 }
