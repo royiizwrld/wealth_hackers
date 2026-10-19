@@ -80,7 +80,7 @@ function BudgetProgress({ month }: { month: string }) {
           const limit = f.budgets[c] ?? 0;
           const used = spent.get(c) ?? 0;
           const pct = limit > 0 ? (used / limit) * 100 : 0;
-          const tone = pct >= 100 ? "bg-destructive" : pct >= 80 ? "bg-warning" : "bg-primary";
+          const tone = pct >= 100 ? "bg-destructive" : pct >= 80 ? "bg-expense" : "bg-primary";
           return (
             <div key={c} className="space-y-1">
               <div className="flex justify-between text-sm"><span>{c}</span><span className="text-muted-foreground">{f.money(used)} / {f.money(limit)}</span></div>
