@@ -14,6 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      activity_log: {
+        Row: {
+          created_at: string
+          device: string | null
+          event: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          device?: string | null
+          event: string
+          id?: string
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          device?: string | null
+          event?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      categories: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       finance_settings: {
         Row: {
           budgets: Json
@@ -89,12 +134,144 @@ export type Database = {
         }
         Relationships: []
       }
+      login_attempts: {
+        Row: {
+          failures: number
+          first_failed_at: string
+          key_hash: string
+          locked_until: string | null
+        }
+        Insert: {
+          failures?: number
+          first_failed_at?: string
+          key_hash: string
+          locked_until?: string | null
+        }
+        Update: {
+          failures?: number
+          first_failed_at?: string
+          key_hash?: string
+          locked_until?: string | null
+        }
+        Relationships: []
+      }
+      mfa_backup_codes: {
+        Row: {
+          code_hash: string
+          created_at: string
+          id: string
+          used_at: string | null
+          user_id: string
+        }
+        Insert: {
+          code_hash: string
+          created_at?: string
+          id?: string
+          used_at?: string | null
+          user_id: string
+        }
+        Update: {
+          code_hash?: string
+          created_at?: string
+          id?: string
+          used_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          ai_data_enabled: boolean
+          budgets: Json
+          created_at: string
+          currency: string
+          first_name: string
+          id: string
+          inactivity_minutes: number
+          last_name: string | null
+          monthly_savings_goal: number
+          palette: string
+          terms_accepted_at: string | null
+          terms_version: string | null
+          theme: string
+          updated_at: string
+        }
+        Insert: {
+          ai_data_enabled?: boolean
+          budgets?: Json
+          created_at?: string
+          currency?: string
+          first_name?: string
+          id: string
+          inactivity_minutes?: number
+          last_name?: string | null
+          monthly_savings_goal?: number
+          palette?: string
+          terms_accepted_at?: string | null
+          terms_version?: string | null
+          theme?: string
+          updated_at?: string
+        }
+        Update: {
+          ai_data_enabled?: boolean
+          budgets?: Json
+          created_at?: string
+          currency?: string
+          first_name?: string
+          id?: string
+          inactivity_minutes?: number
+          last_name?: string | null
+          monthly_savings_goal?: number
+          palette?: string
+          terms_accepted_at?: string | null
+          terms_version?: string | null
+          theme?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      rate_limits: {
+        Row: {
+          bucket: string
+          count: number
+          user_id: string
+          window_start: string
+        }
+        Insert: {
+          bucket: string
+          count?: number
+          user_id: string
+          window_start: string
+        }
+        Update: {
+          bucket?: string
+          count?: number
+          user_id?: string
+          window_start?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      check_rate_limit: {
+        Args: { _bucket: string; _max: number; _window_seconds: number }
+        Returns: boolean
+      }
+      list_my_sessions: {
+        Args: never
+        Returns: {
+          created_at: string
+          id: string
+          ip: string
+          is_current: boolean
+          updated_at: string
+          user_agent: string
+        }[]
+      }
+      mfa_ok: { Args: never; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
