@@ -27,6 +27,9 @@ export function TransactionForm({ open, onOpenChange, editing }: Props) {
   const [payCurrency, setPayCurrency] = useState("");
   const [rate, setRate] = useState<number | null>(null);
   const [rateLoading, setRateLoading] = useState(false);
+  const [override, setOverride] = useState(false);
+  const [customRate, setCustomRate] = useState("");
+  const [customTotal, setCustomTotal] = useState("");
   const [errors, setErrors] = useState<Partial<Record<"amount" | "date" | "category", string>>>({});
 
   useEffect(() => {
@@ -38,6 +41,7 @@ export function TransactionForm({ open, onOpenChange, editing }: Props) {
     setNote(editing?.note ?? "");
     setPayCurrency(editing?.originalCurrency ?? "");
     setRate(null);
+    setOverride(false); setCustomRate(""); setCustomTotal("");
     setErrors({});
   }, [open, editing]);
 
@@ -59,23 +63,31 @@ export function TransactionForm({ open, onOpenChange, editing }: Props) {
     return () => { cancelled = true; };
   }, [payCurrency, f.currency]);
 
-  const foreign = payCurrency && payCurrency !== f.currency && rate != null;
-  const converted = foreign && amount && Number.isFinite(Number(amount))
-    ? Math.round(Number(amount) * rate * 100) / 100
+  const isForeignPick = !!payCurrency && payCurrency !== f.currency;
+  const amt = Number(amount);
+  const amtOk = !!amount && Number.isFinite(amt) && amt > 0;
+  const cRate = Number(customRate);
+  const cTotal = Number(customTotal);
+  const customRateOk = override && !!customRate && Number.isFinite(cRate) && cRate > 0;
+  const customTotalOk = override && !!customTotal && Number.isFinite(cTotal) && cTotal > 0;
+  const effectiveRate = customTotalOk && amtOk ? cTotal / amt : customRateOk ? cRate : rate;
+  const converted = isForeignPick && amtOk
+    ? customTotalOk ? Math.round(cTotal * 100) / 100
+      : effectiveRate != null ? Math.round(amt * effectiveRate * 100) / 100 : null
     : null;
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     const n = Number(amount);
     const errs: Partial<Record<"amount" | "date" | "category", string>> = {};
-    if (!amount || !Number.isFinite(n) || n <= 0) errs.amount = "Enter a positive amount";
-    if (payCurrency && payCurrency !== f.currency && rate == null && !rateLoading) errs.amount = `No exchange rate for ${payCurrency} — pick another currency or try again`;
+    if (!amtOk) errs.amount = "Enter a positive amount";
+    else if (isForeignPick && converted == null && !rateLoading) errs.amount = `No exchange rate for ${payCurrency} — enter your own rate or try again`;
     if (!date) errs.date = "Date is required";
     if (!category) errs.category = "Pick a category";
     setErrors(errs);
     if (Object.keys(errs).length) return;
-    const isForeign = payCurrency && payCurrency !== f.currency && rate != null;
-    const finalAmount = isForeign && rate != null ? Math.round(n * rate * 100) / 100 : Math.round(n * 100) / 100;
+    const isForeign = isForeignPick && converted != null;
+    const finalAmount = isForeign ? converted : Math.round(n * 100) / 100;
     const data = {
       amount: finalAmount,
       date,
@@ -152,10 +164,38 @@ export function TransactionForm({ open, onOpenChange, editing }: Props) {
               </SelectContent>
             </Select>
             {rateLoading && <p className="text-xs text-muted-foreground">Loading today's rate…</p>}
-            {converted != null && rate != null && (
+            {isForeignPick && rate != null && !override && converted != null && (
               <p className="text-xs text-muted-foreground">
                 = {f.money(converted)} at today's rate (1 {payCurrency} ≈ {rate.toFixed(4)} {f.currency})
               </p>
+            )}
+            {isForeignPick && (
+              <button type="button" className="text-xs font-medium text-primary underline-offset-2 hover:underline"
+                onClick={() => setOverride((v) => !v)}>
+                {override ? "Use today's market rate" : "Edit bank / receipt rate"}
+              </button>
+            )}
+            {isForeignPick && override && (
+              <div className="grid grid-cols-2 gap-2 rounded-md border bg-muted/40 p-2">
+                <div className="space-y-1">
+                  <Label htmlFor="customRate" className="text-xs">Your rate (1 {payCurrency} =)</Label>
+                  <Input id="customRate" type="number" step="any" min="0" inputMode="decimal"
+                    placeholder={rate != null ? rate.toFixed(2) : "e.g. 133.5"}
+                    value={customRate} onChange={(e) => { setCustomRate(e.target.value); setCustomTotal(""); }} />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="customTotal" className="text-xs">Or exact {f.currency} charged</Label>
+                  <Input id="customTotal" type="number" step="any" min="0" inputMode="decimal"
+                    placeholder={converted != null ? String(converted) : ""}
+                    value={customTotal} onChange={(e) => { setCustomTotal(e.target.value); setCustomRate(""); }} />
+                </div>
+                {converted != null && (
+                  <p className="col-span-2 text-xs text-muted-foreground">
+                    Will save {f.money(converted)}
+                    {effectiveRate != null && ` (1 ${payCurrency} ≈ ${effectiveRate.toFixed(4)} ${f.currency})`}
+                  </p>
+                )}
+              </div>
             )}
           </div>
           <div className="space-y-1.5">
