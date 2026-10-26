@@ -212,7 +212,7 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     const u = userRef.current;
     if (!u) return;
     const run = () =>
-      supabase.from("profiles").update(patch).eq("id", u.id).then(({ error }) => {
+      supabase.from("profiles").update(patch as never).eq("id", u.id).then(({ error }) => {
         if (error) {
           setState((s) => ({ ...s, ...rollback }));
           failToast(what, () => {
@@ -244,7 +244,7 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
   const updateTransaction = useCallback((t: Transaction) => {
     const prev = stateRef.current.transactions.find((x) => x.id === t.id);
     setState((s) => ({ ...s, transactions: s.transactions.map((x) => (x.id === t.id ? t : x)) }));
-    supabase.from("finance_transactions").update(toRow(t)).eq("id", t.id).then(({ error }) => {
+    supabase.from("finance_transactions").update(toRow(t) as never).eq("id", t.id).then(({ error }) => {
       if (error && prev) {
         setState((s) => ({ ...s, transactions: s.transactions.map((x) => (x.id === t.id ? prev : x)) }));
         failToast("your changes", () => updateTransaction(t));
